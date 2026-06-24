@@ -179,6 +179,10 @@
         <label>お客様名 / 注文番号 <span style="color:red">*</span></label>
         <input type="text" id="customerName" placeholder="例: 田中 太郎">
       </div>
+      <div class="form-group full">
+        <label>備考</label>
+        <input type="text" id="note" placeholder="例: 取り置き希望、連絡事項など">
+      </div>
     </div>
     <div style="margin-top:16px; display:flex; justify-content:flex-end;">
       <button class="btn btn-primary" id="submitBtn" onclick="submitReservation()">
@@ -297,6 +301,7 @@ async function submitReservation() {
   const size         = document.getElementById('size').value.trim();
   const qty          = parseInt(document.getElementById('qty').value) || 1;
   const customerName = document.getElementById('customerName').value.trim();
+  const note         = document.getElementById('note').value.trim();
 
   if (!productName)  { showAlert('alert-form', '商品名を入力してください', 'error'); return; }
   if (!customerName) { showAlert('alert-form', 'お客様名 / 注文番号を入力してください', 'error'); return; }
@@ -310,7 +315,7 @@ async function submitReservation() {
       method: 'POST',
       body: JSON.stringify({
         action: 'addReservation',
-        storeName, productName, color, size, qty, customerName,
+        storeName, productName, color, size, qty, customerName, note,
         reservedAt: new Date().toISOString()
       })
     });
@@ -322,6 +327,7 @@ async function submitReservation() {
       document.getElementById('size').value         = '';
       document.getElementById('qty').value          = '1';
       document.getElementById('customerName').value = '';
+      document.getElementById('note').value         = '';
     } else {
       showAlert('alert-form', 'エラー: ' + (data.error || '不明なエラー'), 'error');
     }
