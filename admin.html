@@ -390,15 +390,16 @@ function renderAllProducts() {
       ? '<tr><td colspan="3" style="padding:12px;color:var(--text2);">設定タブでGAS URLを設定し、店舗マスタを登録してください</td></tr>'
       : '';
 
+    const janHtml = p.jan
+      ? `<span style="font-family:monospace;font-size:11px;color:var(--text2);">JAN: ${esc(p.jan)}</span>`
+      : '';
     div.innerHTML = `
       <div class="product-card-header">
         <div style="flex:1;display:flex;flex-direction:column;gap:4px;">
-          <input type="text" value="${esc(p.jan)}" placeholder="JANコード"
-            style="font-family:monospace;font-size:12px;width:160px;"
-            onchange="updateProductField(${p.id},'jan',this.value)">
           <input type="text" value="${esc(p.name)}" placeholder="商品名"
             style="font-size:13px;font-weight:500;"
             onchange="updateProductField(${p.id},'name',this.value)">
+          ${janHtml}
         </div>
         <button class="btn btn-red btn-sm" onclick="removeProduct(${p.id})">削除</button>
       </div>
@@ -510,7 +511,7 @@ function renderHistory(data) {
     const tr = document.createElement('tr');
     const dt = new Date(r['作成日時']);
     const ds = isNaN(dt) ? r['作成日時'] : dt.toLocaleString('ja-JP');
-    const notified = r['通知済み'] === 'true' || r['通知済み'] === true;
+    const notified = r['通知済み'] === 'true' || r['通知済み'] === true || r['通知済み'] === 'TRUE';
     tr.innerHTML = `
       <td style="font-family:monospace;font-size:11px;">${esc(r['バッチID']||'')}</td>
       <td style="font-size:12px;white-space:nowrap;">${ds}</td>
@@ -519,7 +520,7 @@ function renderHistory(data) {
       <td style="font-family:monospace;font-size:11px;">${esc(r['JAN']||r['jan']||'')}</td>
       <td style="text-align:right;">${r['振り分け数']||0}</td>
       <td style="font-size:12px;">${esc(r['備考']||'')}</td>
-      <td><span style="font-size:11px;padding:2px 7px;border-radius:20px;font-weight:600;background:${notified?'var(--green-l)':'var(--amber-l)'};color:${notified?'var(--green)':'var(--amber)'};">${notified?'送信済':'未送信'}</span></td>
+      <td><span style="font-size:11px;padding:2px 7px;border-radius:20px;font-weight:600;background:${notified?'var(--green-l)':'var(--red-l)'};color:${notified?'var(--green)':'var(--red)'};">${notified?'✓ 送信済':'✗ 未送信'}</span></td>
     `;
     tbody.appendChild(tr);
   });
