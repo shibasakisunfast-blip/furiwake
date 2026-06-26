@@ -3,180 +3,130 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>振り分け管理 — 管理側</title>
+<title>振り分け管理</title>
 <style>
-  :root {
-    --bg: #f7f8fc;
-    --surface: #ffffff;
-    --border: #e2e5ef;
-    --text: #1a1d2e;
-    --text2: #5c607a;
-    --accent: #7c3aed;
-    --accent-light: #f3effe;
-    --success: #0e9f6e;
-    --success-light: #e9faf5;
-    --warn: #d97706;
-    --warn-light: #fffbeb;
-    --danger: #dc2626;
-    --danger-light: #fef2f2;
-    --radius: 10px;
-    --shadow: 0 1px 4px rgba(0,0,0,.08);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Meiryo', sans-serif;
-         background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; }
+:root {
+  --bg: #f4f6fb;
+  --surface: #ffffff;
+  --border: #e2e6f0;
+  --text: #1a1d2e;
+  --text2: #5c607a;
+  --accent: #4f46e5;
+  --accent-l: #eef2ff;
+  --green: #059669;
+  --green-l: #ecfdf5;
+  --amber: #d97706;
+  --amber-l: #fffbeb;
+  --red: #dc2626;
+  --red-l: #fef2f2;
+  --radius: 10px;
+  --shadow: 0 1px 4px rgba(0,0,0,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Meiryo',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;}
 
-  header {
-    background: var(--surface); border-bottom: 1px solid var(--border);
-    padding: 14px 20px; display: flex; align-items: center; gap: 12px;
-    position: sticky; top: 0; z-index: 10; box-shadow: var(--shadow);
-  }
-  header h1 { font-size: 17px; font-weight: 600; }
-  header .badge { font-size: 11px; background: var(--accent-light); color: var(--accent);
-                  padding: 2px 8px; border-radius: 20px; font-weight: 600; }
+/* ヘッダー */
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
+header h1{font-size:16px;font-weight:700;}
+.badge{font-size:11px;background:var(--accent-l);color:var(--accent);padding:2px 8px;border-radius:20px;font-weight:600;}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
 
-  .tabs { display: flex; border-bottom: 1px solid var(--border);
-          background: var(--surface); padding: 0 20px; overflow-x: auto; }
-  .tab { padding: 12px 18px; font-size: 14px; font-weight: 500; color: var(--text2);
-         border: none; background: none; cursor: pointer;
-         border-bottom: 2px solid transparent; transition: all .15s; white-space: nowrap; }
-  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+/* タブ */
+.tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;gap:0;overflow-x:auto;}
+.tab{padding:11px 18px;font-size:13px;font-weight:500;color:var(--text2);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
 
-  .page { display: none; padding: 20px; max-width: 900px; margin: 0 auto; }
-  .page.active { display: block; }
+/* ページ */
+.page{display:none;padding:20px;max-width:1000px;margin:0 auto;}
+.page.active{display:block;}
 
-  .card { background: var(--surface); border: 1px solid var(--border);
-          border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
-          box-shadow: var(--shadow); }
-  .card-title { font-size: 15px; font-weight: 600; margin-bottom: 16px;
-                padding-bottom: 10px; border-bottom: 1px solid var(--border);
-                display: flex; align-items: center; justify-content: space-between; }
+/* カード */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;box-shadow:var(--shadow);}
+.card-title{font-size:15px;font-weight:600;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;}
 
-  label { font-size: 13px; font-weight: 500; color: var(--text2); }
-  input, select, textarea {
-    padding: 8px 12px; border: 1px solid var(--border); border-radius: 7px;
-    font-size: 14px; font-family: inherit; background: var(--bg); color: var(--text);
-    transition: border-color .15s; width: 100%;
-  }
-  input:focus, select:focus, textarea:focus {
-    outline: none; border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(124,58,237,.1);
-  }
-  .form-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
-  .form-row .fg { display: flex; flex-direction: column; gap: 4px; }
-  .form-row .fg.grow { flex: 1; min-width: 140px; }
-  .form-row .fg.fix80 { width: 80px; flex-shrink: 0; }
-  .form-row .fg.fix120 { width: 120px; flex-shrink: 0; }
+/* フォーム */
+label{font-size:12px;font-weight:600;color:var(--text2);}
+input,select,textarea{padding:8px 11px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;background:var(--bg);color:var(--text);width:100%;transition:border-color .15s;}
+input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,70,229,.1);}
+.fg{display:flex;flex-direction:column;gap:4px;}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.row .fg{flex:1;min-width:120px;}
+.row .fg.w80{flex:none;width:80px;}
+.row .fg.w120{flex:none;width:120px;}
+.row .fg.w160{flex:none;width:160px;}
 
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-         padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
-         cursor: pointer; border: none; transition: all .15s; }
-  .btn-primary   { background: var(--accent); color: #fff; }
-  .btn-primary:hover { background: #6d28d9; }
-  .btn-success   { background: var(--success); color: #fff; }
-  .btn-success:hover { background: #047857; }
-  .btn-warn      { background: var(--warn); color: #fff; }
-  .btn-warn:hover{ background: #b45309; }
-  .btn-secondary { background: var(--bg); color: var(--text2); border: 1px solid var(--border); }
-  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
-  .btn-danger    { background: var(--danger-light); color: var(--danger); border: 1px solid #fecaca; }
-  .btn:disabled  { opacity: .5; cursor: default; }
-  .btn-sm { padding: 5px 12px; font-size: 12px; border-radius: 6px; }
+/* ボタン */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:8px 16px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover{background:#4338ca;}
+.btn-green{background:var(--green);color:#fff;}
+.btn-green:hover{background:#047857;}
+.btn-ghost{background:var(--bg);color:var(--text2);border:1px solid var(--border);}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.btn-red{background:var(--red-l);color:var(--red);border:1px solid #fecaca;}
+.btn-red:hover{background:#fee2e2;}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+.btn-sm{padding:5px 11px;font-size:12px;border-radius:6px;}
 
-  .alert { padding: 11px 14px; border-radius: 8px; font-size: 14px; margin-bottom: 14px; display: none; }
-  .alert.success { background: var(--success-light); color: var(--success); border: 1px solid #a7f3d0; }
-  .alert.error   { background: var(--danger-light); color: var(--danger); border: 1px solid #fecaca; }
-  .alert.warn    { background: var(--warn-light); color: var(--warn); border: 1px solid #fde68a; }
-  .alert.show    { display: block; }
+/* アラート */
+.alert{padding:10px 14px;border-radius:7px;font-size:13px;margin-bottom:12px;display:none;}
+.alert.show{display:block;}
+.alert.success{background:var(--green-l);color:var(--green);border:1px solid #6ee7b7;}
+.alert.error{background:var(--red-l);color:var(--red);border:1px solid #fca5a5;}
+.alert.warn{background:var(--amber-l);color:var(--amber);border:1px solid #fde68a;}
 
-  /* 予約テーブル */
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { background: var(--bg); padding: 8px 10px; text-align: left; font-weight: 600;
-       font-size: 12px; color: var(--text2); border-bottom: 1px solid var(--border); white-space: nowrap; }
-  td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #fafbff; }
+/* スピナー */
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-  .status-badge { display: inline-block; padding: 2px 8px; border-radius: 20px;
-                  font-size: 11px; font-weight: 600; white-space: nowrap; }
-  .status-pending { background: var(--warn-light); color: var(--warn); }
-  .status-done    { background: var(--success-light); color: var(--success); }
-  .status-waiting { background: #f0f0f0; color: #666; }
+/* テーブル */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--bg);padding:8px 10px;text-align:left;font-weight:600;font-size:11px;color:var(--text2);border-bottom:1px solid var(--border);white-space:nowrap;}
+td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#f9faff;}
+.empty{text-align:center;padding:40px;color:var(--text2);}
 
-  .empty { text-align: center; padding: 40px 20px; color: var(--text2); font-size: 14px; }
+/* 商品検索 */
+.search-box{position:relative;}
+.search-box input{padding-left:32px;}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text2);font-size:14px;pointer-events:none;}
+.search-results{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:200;max-height:260px;overflow-y:auto;display:none;}
+.search-results.show{display:block;}
+.search-item{padding:9px 12px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .1s;}
+.search-item:last-child{border-bottom:none;}
+.search-item:hover{background:var(--accent-l);}
+.search-item .jan{font-size:11px;color:var(--text2);font-family:monospace;}
+.search-item .name{font-size:13px;font-weight:500;}
+.search-loading{padding:12px;text-align:center;color:var(--text2);font-size:13px;}
 
-  /* 商品グループ */
-  .product-group { background: var(--bg); border: 1px solid var(--border);
-                   border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
-  .product-header {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px 14px; cursor: pointer;
-    background: var(--surface); border-bottom: 1px solid var(--border);
-  }
-  .product-header:hover { background: var(--bg); }
-  .product-name { font-weight: 600; font-size: 14px; flex: 1; }
-  .product-meta { font-size: 12px; color: var(--text2); }
-  .chevron { transition: transform .2s; font-size: 18px; color: var(--text2); }
-  .product-group.open .chevron { transform: rotate(90deg); }
-  .product-body { display: none; padding: 14px; }
-  .product-group.open .product-body { display: block; }
+/* 振り分け行 */
+.alloc-table{width:100%;border-collapse:collapse;}
+.alloc-table th{background:#f8f9ff;padding:7px 10px;font-size:11px;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border);}
+.alloc-table td{padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.alloc-table tr:last-child td{border-bottom:none;}
+.alloc-table input[type=number]{width:70px;text-align:right;}
+.alloc-table input[type=text]{font-size:12px;}
 
-  /* 振り分け入力行 */
-  .alloc-row {
-    display: flex; align-items: center; gap: 8px;
-    padding: 8px 0; border-bottom: 1px solid var(--border);
-  }
-  .alloc-row:last-child { border-bottom: none; }
-  .store-name { width: 130px; font-size: 13px; font-weight: 500; flex-shrink: 0; }
-  .alloc-qty  { width: 70px; flex-shrink: 0; }
-  .alloc-note { flex: 1; min-width: 100px; }
+/* 商品カード */
+.product-card{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:12px;background:var(--surface);}
+.product-card-header{background:#f8f9ff;padding:12px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+.product-card-header .pname{font-weight:600;font-size:13px;flex:1;}
+.product-card-header .pjan{font-family:monospace;font-size:11px;color:var(--text2);}
+.product-card-body{padding:12px;}
 
-  /* サマリーバー */
-  .summary-bar {
-    display: flex; gap: 14px; flex-wrap: wrap;
-    padding: 12px 14px; background: var(--bg);
-    border: 1px solid var(--border); border-radius: 8px; margin-bottom: 14px;
-  }
-  .summary-item { display: flex; flex-direction: column; gap: 2px; }
-  .summary-label { font-size: 11px; color: var(--text2); font-weight: 500; }
-  .summary-value { font-size: 20px; font-weight: 700; line-height: 1.2; }
-  .v-total   { color: var(--text); }
-  .v-done    { color: var(--success); }
-  .v-pending { color: var(--warn); }
-  .v-surplus { color: var(--accent); }
+/* サマリ */
+.stat-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;flex:1;min-width:100px;}
+.stat-label{font-size:11px;color:var(--text2);font-weight:600;}
+.stat-val{font-size:22px;font-weight:700;line-height:1.3;}
+.stat-val.blue{color:var(--accent);}
+.stat-val.green{color:var(--green);}
+.stat-val.amber{color:var(--amber);}
 
-  /* 自動振り分けパネル */
-  .auto-panel { background: var(--accent-light); border: 1px solid #c4b5fd;
-                border-radius: 10px; padding: 16px; margin-bottom: 14px; }
-  .auto-panel h3 { font-size: 14px; font-weight: 600; color: var(--accent); margin-bottom: 12px; }
-  .radio-group { display: flex; gap: 16px; flex-wrap: wrap; }
-  .radio-item  { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
-  .radio-item input { width: auto; }
-
-  /* 結果プレビュー */
-  .result-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
-  .result-table th { background: #f5f3ff; padding: 7px 10px; text-align: left;
-                     font-size: 12px; border-bottom: 1px solid #e9d5ff; }
-  .result-table td { padding: 7px 10px; border-bottom: 1px solid var(--border); }
-  .result-table tr:last-child td { border-bottom: none; }
-
-  /* 通知パネル */
-  .notify-panel { background: #f0fdf4; border: 1px solid #a7f3d0;
-                  border-radius: 10px; padding: 16px; margin-top: 14px; }
-  .notify-panel h3 { font-size: 14px; font-weight: 600; color: var(--success); margin-bottom: 10px; }
-
-  /* スピナー */
-  .spinner { display: inline-block; width: 14px; height: 14px;
-             border: 2px solid rgba(255,255,255,.4); border-top-color: #fff;
-             border-radius: 50%; animation: spin .7s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* 統計バッジ */
-  .count-badge { font-size: 11px; background: var(--accent); color: #fff;
-                 padding: 1px 7px; border-radius: 20px; margin-left: 6px; }
-
-  .settings-row { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+/* 設定 */
+.settings-fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
 </style>
 </head>
 <body>
@@ -184,162 +134,94 @@
 <header>
   <h1>振り分け管理</h1>
   <span class="badge">管理側</span>
-  <span style="margin-left:auto; font-size:13px; color:var(--text2)" id="headerDate"></span>
+  <div class="header-right">
+    <span id="hdate" style="font-size:12px;color:var(--text2);"></span>
+  </div>
 </header>
 
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('overview')">予約状況</button>
-  <button class="tab" onclick="switchTab('manual')">手動振り分け</button>
-  <button class="tab" onclick="switchTab('auto')">自動振り分け</button>
-  <button class="tab" onclick="switchTab('extra')">追加振り分け</button>
+  <button class="tab active" onclick="switchTab('alloc')">振り分け入力</button>
+  <button class="tab" onclick="switchTab('history')">振り分け履歴</button>
   <button class="tab" onclick="switchTab('settings')">設定</button>
 </div>
 
-<!-- 予約状況 -->
-<div id="page-overview" class="page active">
+<!-- ===== 振り分け入力 ===== -->
+<div id="page-alloc" class="page active">
   <div class="card">
     <div class="card-title">
-      <span>予約一覧</span>
-      <button class="btn btn-secondary btn-sm" onclick="loadAll()">更新</button>
+      <span>商品を追加</span>
     </div>
-    <div id="summary-bar" class="summary-bar">
-      <div class="summary-item"><span class="summary-label">総予約数</span><span class="summary-value v-total" id="sv-total">—</span></div>
-      <div class="summary-item"><span class="summary-label">未振り分け</span><span class="summary-value v-pending" id="sv-pending">—</span></div>
-      <div class="summary-item"><span class="summary-label">振り分け済み</span><span class="summary-value v-done" id="sv-done">—</span></div>
-    </div>
-    <div class="form-row">
-      <div class="fg grow"><input type="text" id="f-product" placeholder="商品名で絞り込み" oninput="renderOverview()"></div>
-      <div class="fg fix120">
-        <select id="f-store" onchange="renderOverview()"><option value="">全店舗</option></select>
+
+    <!-- JANコード検索 -->
+    <div class="row" style="align-items:flex-end;">
+      <div class="fg" style="flex:1;position:relative;">
+        <label>JANコード（部分一致）で商品を検索</label>
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="janSearch" placeholder="例: 498972  / 47096..." oninput="onJanInput()" onblur="hideSearchResults()" autocomplete="off">
+        </div>
+        <div class="search-results" id="searchResults"></div>
       </div>
-      <div class="fg fix120">
-        <select id="f-status" onchange="renderOverview()">
-          <option value="">すべて</option>
-          <option value="未振り分け">未振り分け</option>
-          <option value="振り分け済み">振り分け済み</option>
-        </select>
+      <div style="padding-bottom:1px;flex:none;">
+        <button class="btn btn-ghost btn-sm" onclick="addManualRow()">＋ 手入力で追加</button>
       </div>
     </div>
-    <div id="overview-alert" class="alert"></div>
+
+    <div id="alloc-alert" class="alert"></div>
+
+    <!-- 商品カードリスト -->
+    <div id="product-list">
+      <div class="empty" id="product-empty">商品を検索または手入力で追加してください</div>
+    </div>
+
+    <!-- 送信エリア -->
+    <div id="send-area" style="display:none;border-top:1px solid var(--border);padding-top:16px;margin-top:8px;">
+      <div class="row" style="align-items:flex-end;">
+        <div class="fg" style="flex:1;">
+          <label>メール件名（省略時: 【振り分けのご連絡】店舗名 様）</label>
+          <input type="text" id="mailSubject" placeholder="例: 【新商品振り分け】6月分">
+        </div>
+        <div style="flex:none;">
+          <button class="btn btn-green" id="sendBtn" onclick="sendAllNotifications()">
+            ✉ 全店舗へ通知送信
+          </button>
+        </div>
+      </div>
+      <div id="send-alert" class="alert" style="margin-top:10px;margin-bottom:0;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 振り分け履歴 ===== -->
+<div id="page-history" class="page">
+  <div class="card">
+    <div class="card-title">
+      振り分け履歴
+      <button class="btn btn-ghost btn-sm" onclick="loadHistory()">更新</button>
+    </div>
+    <div id="history-alert" class="alert"></div>
     <div class="table-wrap">
       <table>
         <thead><tr>
-          <th>受付日時</th><th>店舗</th><th>商品名</th><th>カラー</th><th>サイズ</th><th>数量</th><th>お客様名</th><th>ステータス</th>
+          <th>バッチID</th><th>作成日時</th><th>店舗</th><th>商品名</th><th>JAN</th><th>数量</th><th>備考</th><th>通知</th>
         </tr></thead>
-        <tbody id="overview-body"></tbody>
+        <tbody id="history-body"></tbody>
       </table>
-      <div id="overview-empty" class="empty" style="display:none">データがありません</div>
+      <div id="history-empty" class="empty" style="display:none;">履歴がありません</div>
     </div>
   </div>
 </div>
 
-<!-- 手動振り分け -->
-<div id="page-manual" class="page">
-  <div class="card">
-    <div class="card-title">手動振り分け</div>
-    <p style="font-size:13px; color:var(--text2); margin-bottom:14px;">各店舗への振り分け数量を入力してください。入力後「通知を送信」で確定します。</p>
-    <div id="manual-alert" class="alert"></div>
-    <div id="manual-products"></div>
-    <div style="margin-top:16px; display:flex; justify-content:flex-end; gap:10px;">
-      <button class="btn btn-secondary" onclick="loadAll()">データ更新</button>
-      <button class="btn btn-success" id="manualNotifyBtn" onclick="sendManualNotification()" style="display:none">
-        ✉ 入力内容を通知送信
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- 自動振り分け -->
-<div id="page-auto" class="page">
-  <div class="card">
-    <div class="card-title">自動振り分け</div>
-    <p style="font-size:13px; color:var(--text2); margin-bottom:16px;">商品ごとに割り当て総数を入力すると、予約日時順に自動で振り分けを計算します。</p>
-    <div id="auto-alert" class="alert"></div>
-
-    <div class="auto-panel">
-      <h3>⚡ 自動振り分け設定</h3>
-      <div class="form-row">
-        <div class="fg grow"><label>商品名</label><input type="text" id="a-product" placeholder="例: ナイキ エアマックス 2025"></div>
-        <div class="fg fix120"><label>カラー（任意）</label><input type="text" id="a-color" placeholder="ブラック"></div>
-        <div class="fg fix120"><label>サイズ（任意）</label><input type="text" id="a-size" placeholder="26.5cm"></div>
-        <div class="fg fix80"><label>割り当て総数</label><input type="number" id="a-total" min="1" value="10"></div>
-      </div>
-
-      <div style="margin-bottom:12px;">
-        <label style="display:block;margin-bottom:6px;">余剰が出た場合の処理</label>
-        <div class="radio-group">
-          <label class="radio-item"><input type="radio" name="surplus" value="carry" checked> 在庫として保持</label>
-          <label class="radio-item"><input type="radio" name="surplus" value="discard"> 破棄（カウントのみ）</label>
-          <label class="radio-item"><input type="radio" name="surplus" value="custom" onchange="toggleSurplusStore(true)"> 指定店舗へ追加配分</label>
-        </div>
-      </div>
-      <div id="surplus-store-row" style="display:none; margin-bottom:12px;">
-        <label>余剰配分先の店舗</label>
-        <select id="a-surplus-store"><option value="">店舗を選択...</option></select>
-      </div>
-
-      <button class="btn btn-primary" onclick="runAutoAllocate()">振り分けを計算する</button>
-    </div>
-
-    <div id="auto-result" style="display:none">
-      <div id="auto-result-content"></div>
-      <div class="notify-panel">
-        <h3>✉ 振り分け通知</h3>
-        <div class="form-row" style="margin-bottom:8px;">
-          <div class="fg grow"><label>件名（任意）</label><input type="text" id="a-subject" placeholder="デフォルト: 【振り分けのご連絡】店舗名 様"></div>
-        </div>
-        <button class="btn btn-success" id="autoSendBtn" onclick="sendAutoNotification()">各店舗へメール送信</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 追加振り分け（予約なし商品） -->
-<div id="page-extra" class="page">
-  <div class="card">
-    <div class="card-title">追加振り分け（任意）</div>
-    <p style="font-size:13px; color:var(--text2); margin-bottom:16px;">予約が入っていない商品を任意で店舗へ振り分け、メール通知します。</p>
-    <div id="extra-alert" class="alert"></div>
-
-    <div id="extra-rows">
-      <div class="extra-row" style="border:1px solid var(--border); border-radius:8px; padding:12px; margin-bottom:10px;">
-        <div class="form-row">
-          <div class="fg grow"><label>商品名</label><input type="text" class="e-product" placeholder="商品名"></div>
-          <div class="fg fix120"><label>カラー</label><input type="text" class="e-color" placeholder="カラー"></div>
-          <div class="fg fix120"><label>サイズ</label><input type="text" class="e-size" placeholder="サイズ"></div>
-        </div>
-        <div class="form-row">
-          <div class="fg fix120"><label>店舗</label>
-            <select class="e-store"><option value="">店舗を選択...</option></select>
-          </div>
-          <div class="fg fix80"><label>数量</label><input type="number" class="e-qty" value="1" min="1"></div>
-          <div class="fg grow"><label>備考</label><input type="text" class="e-note" placeholder="任意メモ"></div>
-          <div class="fg" style="align-self:flex-end;">
-            <button class="btn btn-danger btn-sm" onclick="removeExtraRow(this)">削除</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <button class="btn btn-secondary btn-sm" onclick="addExtraRow()" style="margin-bottom:16px;">＋ 行を追加</button>
-
-    <div style="border-top:1px solid var(--border); padding-top:14px;">
-      <div class="form-row" style="margin-bottom:8px;">
-        <div class="fg grow"><label>件名（任意）</label><input type="text" id="extra-subject" placeholder="デフォルト: 【振り分けのご連絡】店舗名 様"></div>
-      </div>
-      <button class="btn btn-success" id="extraSendBtn" onclick="sendExtraNotification()">✉ 追加振り分けを通知送信</button>
-    </div>
-  </div>
-</div>
-
-<!-- 設定 -->
+<!-- ===== 設定 ===== -->
 <div id="page-settings" class="page">
   <div class="card">
     <div class="card-title">設定</div>
-    <div class="settings-row"><label>GAS エンドポイント URL</label>
-      <input type="url" id="s-gasUrl" placeholder="https://script.google.com/macros/s/..."></div>
-    <div style="display:flex; justify-content:flex-end; gap:10px;">
-      <button class="btn btn-secondary" onclick="testConn()">接続テスト</button>
+    <div class="settings-fg">
+      <label>GAS エンドポイント URL</label>
+      <input type="url" id="s-url" placeholder="https://script.google.com/macros/s/...">
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn btn-ghost" onclick="testConn()">接続テスト</button>
       <button class="btn btn-primary" onclick="saveSettings()">保存</button>
     </div>
     <div id="settings-alert" class="alert" style="margin-top:12px;"></div>
@@ -347,26 +229,26 @@
 </div>
 
 <script>
-// ====== 状態 ======
-let stores       = [];
-let reservations = [];
-let autoResult   = null;
+// ========== 状態 ==========
+const GAS_KEY = 'furiwake_gasUrl';
+let stores = [];
+let products = []; // 振り分け入力中の商品リスト [{id, jan, name, rows:[{store,qty,note}]}]
+let productIdCounter = 0;
+let searchTimer = null;
+let masterCache = {}; // JAN検索キャッシュ
 
-const GAS_URL_KEY = 'alloc_admin_gasUrl';
-
-// ====== 初期化 ======
+// ========== 初期化 ==========
 window.onload = () => {
-  document.getElementById('s-gasUrl').value = localStorage.getItem(GAS_URL_KEY) || '';
-  const now = new Date();
-  document.getElementById('headerDate').textContent =
-    `${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`;
-  loadAll();
+  document.getElementById('s-url').value = localStorage.getItem(GAS_KEY) || '';
+  document.getElementById('hdate').textContent = new Date().toLocaleDateString('ja-JP');
+  loadStores();
 };
 
-function getUrl() { return localStorage.getItem(GAS_URL_KEY) || ''; }
+function getUrl() { return localStorage.getItem(GAS_KEY) || ''; }
 function saveSettings() {
-  localStorage.setItem(GAS_URL_KEY, document.getElementById('s-gasUrl').value.trim());
+  localStorage.setItem(GAS_KEY, document.getElementById('s-url').value.trim());
   showAlert('settings-alert', '保存しました', 'success');
+  loadStores();
 }
 async function testConn() {
   const url = getUrl();
@@ -374,344 +256,278 @@ async function testConn() {
   try {
     const r = await fetch(url + '?action=getStores');
     const d = await r.json();
-    if (d.stores) showAlert('settings-alert', '接続成功！ 店舗数: ' + d.stores.length, 'success');
-    else          showAlert('settings-alert', 'エラー: ' + JSON.stringify(d), 'error');
+    if (d.stores) showAlert('settings-alert', `接続成功！ 店舗数: ${d.stores.length}`, 'success');
+    else showAlert('settings-alert', 'エラー: ' + JSON.stringify(d), 'error');
   } catch(e) { showAlert('settings-alert', '接続失敗: ' + e.message, 'error'); }
 }
 
-// ====== タブ ======
+// ========== タブ ==========
 function switchTab(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   event.target.classList.add('active');
+  if (name === 'history') loadHistory();
 }
 
-// ====== データ取得 ======
-async function loadAll() {
+// ========== 店舗読み込み ==========
+async function loadStores() {
   const url = getUrl();
   if (!url) return;
   try {
-    const [sRes, rRes] = await Promise.all([
-      fetch(url + '?action=getStores'),
-      fetch(url + '?action=getReservations')
-    ]);
-    stores       = (await sRes.json()).stores || [];
-    reservations = (await rRes.json()).reservations || [];
-    buildStoreFilters();
-    renderOverview();
-    buildManualPanel();
-    buildExtraStores();
-    buildAutoStoreSelect();
-  } catch(e) {
-    showAlert('overview-alert', '取得失敗: ' + e.message, 'error');
-  }
+    const r = await fetch(url + '?action=getStores');
+    const d = await r.json();
+    stores = d.stores || [];
+    // 既存の商品カードの店舗行を更新
+    renderAllProducts();
+  } catch(e) { console.warn('店舗読み込み失敗:', e.message); }
 }
 
-function buildStoreFilters() {
-  const sel = document.getElementById('f-store');
-  sel.innerHTML = '<option value="">全店舗</option>';
-  stores.forEach(s => { const o = document.createElement('option'); o.value = o.textContent = s.name; sel.appendChild(o); });
-}
-function buildAutoStoreSelect() {
-  const sel = document.getElementById('a-surplus-store');
-  sel.innerHTML = '<option value="">店舗を選択...</option>';
-  stores.forEach(s => { const o = document.createElement('option'); o.value = o.textContent = s.name; sel.appendChild(o); });
-}
-function buildExtraStores() {
-  document.querySelectorAll('.e-store').forEach(sel => fillStoreSelect(sel));
-}
-function fillStoreSelect(sel) {
-  const cur = sel.value;
-  sel.innerHTML = '<option value="">店舗を選択...</option>';
-  stores.forEach(s => { const o = document.createElement('option'); o.value = o.textContent = s.name; sel.appendChild(o); });
-  if (cur) sel.value = cur;
+// ========== JAN検索 ==========
+function onJanInput() {
+  clearTimeout(searchTimer);
+  const val = document.getElementById('janSearch').value.trim();
+  if (val.length < 4) { hideSearchResults(); return; }
+  searchTimer = setTimeout(() => searchJan(val), 300);
 }
 
-// ====== 概要 ======
-function renderOverview() {
-  const fp = document.getElementById('f-product').value.toLowerCase();
-  const fs = document.getElementById('f-store').value;
-  const fst = document.getElementById('f-status').value;
+async function searchJan(query) {
+  const url = getUrl();
+  if (!url) return;
 
-  let data = reservations.filter(r =>
-    (!fp  || (r['商品名']||'').toLowerCase().includes(fp)) &&
-    (!fs  || r['店舗名'] === fs) &&
-    (!fst || r['ステータス'] === fst)
-  ).sort((a, b) => new Date(a['予約日時']) - new Date(b['予約日時']));
-
-  document.getElementById('sv-total').textContent   = reservations.length;
-  document.getElementById('sv-pending').textContent = reservations.filter(r => r['ステータス'] === '未振り分け').length;
-  document.getElementById('sv-done').textContent    = reservations.filter(r => r['ステータス'] === '振り分け済み').length;
-
-  const tbody = document.getElementById('overview-body');
-  const empty = document.getElementById('overview-empty');
-  tbody.innerHTML = '';
-  if (!data.length) { empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  data.forEach(r => {
-    const tr = document.createElement('tr');
-    const dt = new Date(r['予約日時']);
-    const ds = isNaN(dt) ? r['予約日時'] : `${dt.getMonth()+1}/${dt.getDate()} ${dt.getHours()}:${String(dt.getMinutes()).padStart(2,'0')}`;
-    const st = r['ステータス'] || '未振り分け';
-    const cls = st === '振り分け済み' ? 'status-done' : 'status-pending';
-    tr.innerHTML = `<td>${ds}</td><td>${esc(r['店舗名']||'')}</td><td>${esc(r['商品名']||'')}</td><td>${esc(r['カラー']||'')}</td><td>${esc(r['サイズ']||'')}</td><td>${r['数量']||1}</td><td>${esc(r['お客様名/注文番号']||'')}</td><td><span class="status-badge ${cls}">${esc(st)}</span></td>`;
-    tbody.appendChild(tr);
-  });
-}
-
-// ====== 手動振り分けパネル ======
-function buildManualPanel() {
-  // 商品×カラー×サイズでグループ化（未振り分けのみ）
-  const groups = {};
-  reservations.filter(r => r['ステータス'] !== '振り分け済み').forEach(r => {
-    const key = `${r['商品名']}|${r['カラー']||''}|${r['サイズ']||''}`;
-    if (!groups[key]) groups[key] = { productName: r['商品名'], color: r['カラー']||'', size: r['サイズ']||'', reservations: [] };
-    groups[key].reservations.push(r);
-  });
-
-  const container = document.getElementById('manual-products');
-  container.innerHTML = '';
-
-  if (!Object.keys(groups).length) {
-    container.innerHTML = '<div class="empty">未振り分けの予約がありません</div>';
-    document.getElementById('manualNotifyBtn').style.display = 'none';
+  // キャッシュ確認
+  if (masterCache[query]) {
+    showResults(masterCache[query]);
     return;
   }
-  document.getElementById('manualNotifyBtn').style.display = 'inline-flex';
 
-  Object.entries(groups).forEach(([key, g]) => {
-    const totalQty = g.reservations.reduce((s, r) => s + (Number(r['数量'])||1), 0);
-    const storeQty = {};
-    g.reservations.forEach(r => {
-      storeQty[r['店舗名']] = (storeQty[r['店舗名']]||0) + (Number(r['数量'])||1);
-    });
+  const el = document.getElementById('searchResults');
+  el.innerHTML = '<div class="search-loading">検索中...</div>';
+  el.classList.add('show');
 
+  try {
+    const r = await fetch(`${url}?action=searchMaster&query=${encodeURIComponent(query)}`);
+    const d = await r.json();
+    masterCache[query] = d.items || [];
+    showResults(d.items || []);
+  } catch(e) {
+    el.innerHTML = '<div class="search-loading">検索失敗</div>';
+  }
+}
+
+function showResults(items) {
+  const el = document.getElementById('searchResults');
+  if (!items.length) {
+    el.innerHTML = '<div class="search-loading">該当なし</div>';
+    el.classList.add('show');
+    return;
+  }
+  el.innerHTML = items.slice(0, 30).map(item =>
+    `<div class="search-item" onmousedown="selectProduct('${esc(item.jan)}','${esc(item.name).replace(/'/g,"\\'")}')">
+      <div class="jan">${esc(item.jan)}</div>
+      <div class="name">${esc(item.name)}</div>
+    </div>`
+  ).join('');
+  el.classList.add('show');
+}
+
+function hideSearchResults() {
+  setTimeout(() => {
+    document.getElementById('searchResults').classList.remove('show');
+  }, 200);
+}
+
+function selectProduct(jan, name) {
+  document.getElementById('janSearch').value = '';
+  hideSearchResults();
+  addProductCard(jan, name);
+}
+
+// ========== 手入力追加 ==========
+function addManualRow() {
+  addProductCard('', '');
+}
+
+// ========== 商品カード追加 ==========
+function addProductCard(jan, name) {
+  const id = ++productIdCounter;
+  products.push({ id, jan, name, rows: stores.map(s => ({ store: s.name, qty: 0, note: '' })) });
+  document.getElementById('product-empty').style.display = 'none';
+  renderAllProducts();
+  updateSendArea();
+}
+
+function removeProduct(id) {
+  products = products.filter(p => p.id !== id);
+  renderAllProducts();
+  if (!products.length) document.getElementById('product-empty').style.display = 'block';
+  updateSendArea();
+}
+
+// ========== 商品カードレンダリング ==========
+function renderAllProducts() {
+  const container = document.getElementById('product-list');
+  // 既存カードを削除（emptyは残す）
+  container.querySelectorAll('.product-card').forEach(el => el.remove());
+
+  products.forEach(p => {
     const div = document.createElement('div');
-    div.className = 'product-group';
-    div.dataset.key = key;
+    div.className = 'product-card';
+    div.id = 'pcard-' + p.id;
 
-    const allocRows = stores.map(s => `
-      <div class="alloc-row">
-        <span class="store-name">${esc(s.name)}</span>
-        <input type="number" class="alloc-qty" data-store="${esc(s.name)}" min="0" value="${storeQty[s.name]||0}" placeholder="0">
-        <input type="text" class="alloc-note" placeholder="備考（任意）">
-      </div>
-    `).join('');
+    const storeRows = (stores.length ? stores : []).map(s => {
+      const existing = p.rows.find(r => r.store === s.name) || { store: s.name, qty: 0, note: '' };
+      return `<tr>
+        <td style="font-size:13px;font-weight:500;">${esc(s.name)}</td>
+        <td><input type="number" min="0" value="${existing.qty}" placeholder="0"
+          onchange="updateRow(${p.id},'${esc(s.name)}','qty',this.value)"></td>
+        <td><input type="text" value="${esc(existing.note)}" placeholder="備考（任意）"
+          onchange="updateRow(${p.id},'${esc(s.name)}','note',this.value)"></td>
+      </tr>`;
+    }).join('');
+
+    const noStoreMsg = stores.length === 0
+      ? '<tr><td colspan="3" style="padding:12px;color:var(--text2);">設定タブでGAS URLを設定し、店舗マスタを登録してください</td></tr>'
+      : '';
 
     div.innerHTML = `
-      <div class="product-header" onclick="toggleGroup(this)">
-        <span class="chevron">›</span>
-        <span class="product-name">${esc(g.productName)}</span>
-        <span class="product-meta">${esc(g.color)} ${esc(g.size)}</span>
-        <span class="product-meta" style="margin-left:8px;">予約: ${totalQty}点</span>
-        <span class="count-badge">${g.reservations.length}件</span>
+      <div class="product-card-header">
+        <div style="flex:1;display:flex;flex-direction:column;gap:4px;">
+          <input type="text" value="${esc(p.jan)}" placeholder="JANコード"
+            style="font-family:monospace;font-size:12px;width:160px;"
+            onchange="updateProductField(${p.id},'jan',this.value)">
+          <input type="text" value="${esc(p.name)}" placeholder="商品名"
+            style="font-size:13px;font-weight:500;"
+            onchange="updateProductField(${p.id},'name',this.value)">
+        </div>
+        <button class="btn btn-red btn-sm" onclick="removeProduct(${p.id})">削除</button>
       </div>
-      <div class="product-body">
-        <p style="font-size:12px; color:var(--text2); margin-bottom:10px;">各店舗への振り分け数量を入力してください（予約数をもとに自動入力済み）</p>
-        ${allocRows}
+      <div class="product-card-body">
+        <table class="alloc-table">
+          <thead><tr><th style="width:140px;">店舗</th><th style="width:80px;">数量</th><th>備考</th></tr></thead>
+          <tbody>${storeRows}${noStoreMsg}</tbody>
+        </table>
       </div>
     `;
     container.appendChild(div);
   });
 }
 
-function toggleGroup(header) {
-  header.parentElement.classList.toggle('open');
+function updateProductField(id, field, value) {
+  const p = products.find(p => p.id === id);
+  if (p) p[field] = value;
 }
 
-// 手動振り分け通知
-async function sendManualNotification() {
+function updateRow(productId, storeName, field, value) {
+  const p = products.find(p => p.id === productId);
+  if (!p) return;
+  let row = p.rows.find(r => r.store === storeName);
+  if (!row) { row = { store: storeName, qty: 0, note: '' }; p.rows.push(row); }
+  row[field] = field === 'qty' ? (parseInt(value) || 0) : value;
+}
+
+function updateSendArea() {
+  document.getElementById('send-area').style.display = products.length ? 'block' : 'none';
+}
+
+// ========== メール送信 ==========
+async function sendAllNotifications() {
   const url = getUrl();
-  if (!url) { showAlert('manual-alert', 'GAS URLが設定されていません', 'error'); return; }
+  if (!url) { showAlert('alloc-alert', 'GAS URLが設定されていません', 'error'); return; }
 
+  // 送信データ構築（数量>0の行のみ）
   const allocations = [];
-  document.querySelectorAll('.product-group').forEach(group => {
-    const [productName, color, size] = group.dataset.key.split('|');
-    group.querySelectorAll('.alloc-row').forEach(row => {
-      const qty  = parseInt(row.querySelector('.alloc-qty').value) || 0;
-      const note = row.querySelector('.alloc-note').value.trim();
-      const storeName = row.querySelector('.alloc-qty').dataset.store;
-      if (qty > 0) allocations.push({ storeName, productName, color, size, qty, note });
-    });
-  });
+  let valid = false;
+  for (const p of products) {
+    for (const row of p.rows) {
+      if (row.qty > 0) {
+        allocations.push({
+          storeName:   row.store,
+          productName: p.name,
+          jan:         p.jan,
+          qty:         row.qty,
+          note:        row.note || ''
+        });
+        valid = true;
+      }
+    }
+  }
 
-  if (!allocations.length) { showAlert('manual-alert', '振り分け数が0です。数量を入力してください', 'warn'); return; }
+  if (!valid) { showAlert('send-alert', '数量が1以上の行がありません', 'warn'); return; }
 
-  const btn = document.getElementById('manualNotifyBtn');
+  const subject = document.getElementById('mailSubject').value.trim();
+  const btn = document.getElementById('sendBtn');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> 送信中...';
 
   try {
     const saveRes = await post(url, { action: 'saveAllocation', allocations });
-    const batchId = saveRes.batchId;
-    const notifyRes = await post(url, { action: 'sendNotification', batchId, allocations });
-    const msg = `送信完了: ${notifyRes.sent?.join(', ')||'0件'}` +
+    const notifyRes = await post(url, {
+      action: 'sendNotification',
+      batchId: saveRes.batchId,
+      allocations,
+      subject: subject || undefined
+    });
+    const msg = `送信完了: ${(notifyRes.sent||[]).join(', ')||'0件'}` +
       (notifyRes.errors?.length ? `　エラー: ${notifyRes.errors.join(', ')}` : '');
-    showAlert('manual-alert', msg, notifyRes.errors?.length ? 'warn' : 'success');
+    showAlert('send-alert', msg, notifyRes.errors?.length ? 'warn' : 'success');
+    if (!notifyRes.errors?.length) {
+      // 送信成功後クリア
+      setTimeout(() => {
+        products = [];
+        renderAllProducts();
+        document.getElementById('product-empty').style.display = 'block';
+        updateSendArea();
+        document.getElementById('mailSubject').value = '';
+      }, 2000);
+    }
   } catch(e) {
-    showAlert('manual-alert', '送信失敗: ' + e.message, 'error');
+    showAlert('send-alert', '送信失敗: ' + e.message, 'error');
   } finally {
     btn.disabled = false;
-    btn.innerHTML = '✉ 入力内容を通知送信';
+    btn.innerHTML = '✉ 全店舗へ通知送信';
   }
 }
 
-// ====== 自動振り分け ======
-function toggleSurplusStore(on) {
-  document.getElementById('surplus-store-row').style.display = on ? 'block' : 'none';
-  if (!on) document.querySelectorAll('[name=surplus]').forEach(r => {
-    r.addEventListener('change', () => {
-      document.getElementById('surplus-store-row').style.display = r.value === 'custom' ? 'block' : 'none';
-    });
+// ========== 履歴 ==========
+async function loadHistory() {
+  const url = getUrl();
+  if (!url) { showAlert('history-alert', 'GAS URLが設定されていません', 'error'); return; }
+  try {
+    const r = await fetch(url + '?action=getAllocations');
+    const d = await r.json();
+    renderHistory(d.allocations || []);
+  } catch(e) { showAlert('history-alert', '取得失敗: ' + e.message, 'error'); }
+}
+
+function renderHistory(data) {
+  const tbody = document.getElementById('history-body');
+  const empty = document.getElementById('history-empty');
+  tbody.innerHTML = '';
+  if (!data.length) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  [...data].reverse().forEach(r => {
+    const tr = document.createElement('tr');
+    const dt = new Date(r['作成日時']);
+    const ds = isNaN(dt) ? r['作成日時'] : dt.toLocaleString('ja-JP');
+    const notified = r['通知済み'] === 'true' || r['通知済み'] === true;
+    tr.innerHTML = `
+      <td style="font-family:monospace;font-size:11px;">${esc(r['バッチID']||'')}</td>
+      <td style="font-size:12px;white-space:nowrap;">${ds}</td>
+      <td>${esc(r['店舗名']||'')}</td>
+      <td>${esc(r['商品名']||'')}</td>
+      <td style="font-family:monospace;font-size:11px;">${esc(r['JAN']||r['jan']||'')}</td>
+      <td style="text-align:right;">${r['振り分け数']||0}</td>
+      <td style="font-size:12px;">${esc(r['備考']||'')}</td>
+      <td><span style="font-size:11px;padding:2px 7px;border-radius:20px;font-weight:600;background:${notified?'var(--green-l)':'var(--amber-l)'};color:${notified?'var(--green)':'var(--amber)'};">${notified?'送信済':'未送信'}</span></td>
+    `;
+    tbody.appendChild(tr);
   });
 }
 
-async function runAutoAllocate() {
-  const url = getUrl();
-  if (!url) { showAlert('auto-alert', 'GAS URLが設定されていません', 'error'); return; }
-
-  const productName = document.getElementById('a-product').value.trim();
-  const color       = document.getElementById('a-color').value.trim();
-  const size        = document.getElementById('a-size').value.trim();
-  const totalQty    = parseInt(document.getElementById('a-total').value) || 0;
-  const surplus     = document.querySelector('[name=surplus]:checked')?.value || 'carry';
-  const surplusStore = document.getElementById('a-surplus-store').value;
-
-  if (!productName) { showAlert('auto-alert', '商品名を入力してください', 'error'); return; }
-  if (!totalQty)    { showAlert('auto-alert', '割り当て総数を入力してください', 'error'); return; }
-
-  try {
-    const data = await post(url, { action: 'autoAllocate', productName, color, size, totalQty, surplus, surplusStore });
-    if (data.error) { showAlert('auto-alert', data.error, 'error'); return; }
-    autoResult = data;
-    renderAutoResult(data);
-  } catch(e) { showAlert('auto-alert', e.message, 'error'); }
-}
-
-function renderAutoResult(data) {
-  const el = document.getElementById('auto-result');
-  const content = document.getElementById('auto-result-content');
-  el.style.display = 'block';
-
-  const surplus = data.surplusResult;
-  let surplusHtml = '';
-  if (surplus) {
-    const labels = { carry: '在庫として保持', discard: '破棄', custom: `${surplus.store||''} へ追加配分` };
-    surplusHtml = `<tr><td colspan="4" style="color:var(--accent); font-weight:600; padding-top:10px;">余剰: ${surplus.qty}点 → ${labels[surplus.action]||''}</td></tr>`;
-  }
-
-  const rows = data.allocations.map(a =>
-    `<tr><td>${esc(a.storeName)}</td><td>${esc(a.productName)}</td><td>${esc(a.color||'')} ${esc(a.size||'')}</td><td>${a.qty}点</td></tr>`
-  ).join('');
-
-  const waitHtml = data.waitlist?.length
-    ? `<div style="margin-top:12px; padding:10px; background:var(--warn-light); border-radius:8px; font-size:13px; color:var(--warn);">
-         <strong>⚠ 割り当て不足: 以下の予約は振り分けできませんでした</strong><br>
-         ${data.waitlist.map(w => `${esc(w.storeName)}: ${esc(w.customerName)} (${w.qty}点)`).join('　/　')}
-       </div>` : '';
-
-  const remaining = data.allocatedCount < parseInt(document.getElementById('a-total').value||0)
-    ? `<div style="margin-top:8px; font-size:13px; color:var(--text2);">割り当て総数: <strong>${document.getElementById('a-total').value}</strong>点　/ 振り分け確定: <strong>${data.allocatedCount}</strong>点　/ 残数: <strong style="color:var(--accent)">${data.remaining}</strong>点</div>`
-    : `<div style="margin-top:8px; font-size:13px; color:var(--success);">全数振り分け完了 (${data.allocatedCount}点)</div>`;
-
-  content.innerHTML = `
-    <div style="margin-bottom:12px;">
-      <strong style="font-size:14px;">振り分け結果プレビュー</strong>
-      ${remaining}
-    </div>
-    <div class="table-wrap">
-      <table class="result-table">
-        <thead><tr><th>店舗</th><th>商品名</th><th>カラー / サイズ</th><th>振り分け数</th></tr></thead>
-        <tbody>${rows}${surplusHtml}</tbody>
-      </table>
-    </div>
-    ${waitHtml}
-  `;
-}
-
-async function sendAutoNotification() {
-  if (!autoResult) return;
-  const url = getUrl();
-  if (!url) { showAlert('auto-alert', 'GAS URLが設定されていません', 'error'); return; }
-
-  const subject = document.getElementById('a-subject').value.trim();
-  const btn = document.getElementById('autoSendBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> 送信中...';
-
-  try {
-    const saveRes = await post(url, { action: 'saveAllocation', allocations: autoResult.allocations });
-    const notifyRes = await post(url, { action: 'sendNotification', batchId: saveRes.batchId, allocations: autoResult.allocations, subject: subject || undefined });
-    const msg = `送信完了: ${notifyRes.sent?.join(', ')||'0件'}` +
-      (notifyRes.errors?.length ? `　エラー: ${notifyRes.errors.join(', ')}` : '');
-    showAlert('auto-alert', msg, notifyRes.errors?.length ? 'warn' : 'success');
-  } catch(e) { showAlert('auto-alert', '送信失敗: ' + e.message, 'error'); }
-  finally { btn.disabled = false; btn.textContent = '各店舗へメール送信'; }
-}
-
-// ====== 追加振り分け ======
-function addExtraRow() {
-  const container = document.getElementById('extra-rows');
-  const div = document.createElement('div');
-  div.className = 'extra-row';
-  div.style.cssText = 'border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;';
-  div.innerHTML = `
-    <div class="form-row">
-      <div class="fg grow"><label>商品名</label><input type="text" class="e-product" placeholder="商品名"></div>
-      <div class="fg fix120"><label>カラー</label><input type="text" class="e-color" placeholder="カラー"></div>
-      <div class="fg fix120"><label>サイズ</label><input type="text" class="e-size" placeholder="サイズ"></div>
-    </div>
-    <div class="form-row">
-      <div class="fg fix120"><label>店舗</label><select class="e-store"><option value="">選択...</option></select></div>
-      <div class="fg fix80"><label>数量</label><input type="number" class="e-qty" value="1" min="1"></div>
-      <div class="fg grow"><label>備考</label><input type="text" class="e-note" placeholder="備考"></div>
-      <div class="fg" style="align-self:flex-end;"><button class="btn btn-danger btn-sm" onclick="removeExtraRow(this)">削除</button></div>
-    </div>
-  `;
-  container.appendChild(div);
-  fillStoreSelect(div.querySelector('.e-store'));
-}
-function removeExtraRow(btn) {
-  const rows = document.querySelectorAll('#extra-rows .extra-row');
-  if (rows.length > 1) btn.closest('.extra-row').remove();
-}
-
-async function sendExtraNotification() {
-  const url = getUrl();
-  if (!url) { showAlert('extra-alert', 'GAS URLが設定されていません', 'error'); return; }
-  const subject = document.getElementById('extra-subject').value.trim();
-
-  const allocations = [];
-  document.querySelectorAll('#extra-rows .extra-row').forEach(row => {
-    const product   = row.querySelector('.e-product').value.trim();
-    const color     = row.querySelector('.e-color').value.trim();
-    const size      = row.querySelector('.e-size').value.trim();
-    const storeName = row.querySelector('.e-store').value;
-    const qty       = parseInt(row.querySelector('.e-qty').value) || 1;
-    const note      = row.querySelector('.e-note').value.trim();
-    if (product && storeName) allocations.push({ storeName, productName: product, color, size, qty, note });
-  });
-
-  if (!allocations.length) { showAlert('extra-alert', '商品名と店舗を入力してください', 'warn'); return; }
-
-  const btn = document.getElementById('extraSendBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> 送信中...';
-
-  try {
-    const saveRes = await post(url, { action: 'saveAllocation', allocations });
-    const notifyRes = await post(url, { action: 'sendNotification', batchId: saveRes.batchId, allocations, subject: subject || undefined });
-    const msg = `送信完了: ${notifyRes.sent?.join(', ')||'0件'}` +
-      (notifyRes.errors?.length ? `　エラー: ${notifyRes.errors.join(', ')}` : '');
-    showAlert('extra-alert', msg, notifyRes.errors?.length ? 'warn' : 'success');
-  } catch(e) { showAlert('extra-alert', '送信失敗: ' + e.message, 'error'); }
-  finally { btn.disabled = false; btn.innerHTML = '✉ 追加振り分けを通知送信'; }
-}
-
-// ====== ユーティリティ ======
+// ========== ユーティリティ ==========
 function esc(str) {
-  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 function showAlert(id, msg, type) {
   const el = document.getElementById(id);
@@ -726,3 +542,4 @@ async function post(url, data) {
 </script>
 </body>
 </html>
+HTMLEOF
